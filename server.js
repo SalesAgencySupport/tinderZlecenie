@@ -5,19 +5,23 @@ const helmet = require('helmet');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Użycie Helmet w celu ustawienia nagłówków bezpieczeństwa
+// Użycie Helmet do ustawienia nagłówków bezpieczeństwa
 app.use(helmet());
 
-// Konfiguracja Content Security Policy (CSP)
+// Konfiguracja niestandardowej polityki CSP
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         imgSrc: ["'self'", "data:", "http:", "https:"],
         connectSrc: ["'self'", "https://x8ki-letl-twmt.n7.xano.io"], // Zezwól na połączenia z API Xano
-        frameAncestors: ["'self'", "https://bubble.io"], // Zezwolenie na osadzanie iframe
-    }
+        frameAncestors: ["'self'", "https://bubble.io"], // Zezwolenie na osadzanie iframe na bubble.io
+    },
+    reportOnly: false, // Domyślnie pełne egzekwowanie CSP
 }));
+
+// Usuwanie domyślnego X-Frame-Options, bo CSP to obsługuje
+app.use(helmet.frameguard({ action: 'sameorigin' })); // Możesz także ustawić frameguard dla innych reguł
 
 // Obsługa żądań favicon
 app.get('/favicon.ico', (req, res) => {
