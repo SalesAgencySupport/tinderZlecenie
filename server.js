@@ -3,10 +3,18 @@ const path = require('path');
 const helmet = require('helmet');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Użyj PORT z Heroku lub 3000 lokalnie
+const PORT = process.env.PORT || 3000;
 
 // Użyj Helmet, aby ustawić nagłówki bezpieczeństwa
 app.use(helmet());
+
+// Nagłówek X-Frame-Options: zezwala na osadzanie w iframe
+app.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'ALLOW-FROM https://your-bubble-app-url.bubbleapps.io');
+    // lub
+    // res.setHeader('X-Frame-Options', 'ALLOWALL'); // Nie jest zalecane, ale może być użyte do testowania
+    next();
+});
 
 // Ustawienia polityki CSP
 app.use(helmet.contentSecurityPolicy({
