@@ -17,7 +17,7 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         imgSrc: ["'self'", "data:", "http:", "https:"],
         connectSrc: ["'self'", "https://x8ki-letl-twmt.n7.xano.io"], // Zezwól na połączenia z API Xano
-        frameAncestors: ["'self'", "https://bubble.io"], // Zezwolenie na osadzanie iframe na stronie Bubble
+        frameAncestors: ["'self'", "https://aplikacjatestowa-59427.bubbleapps.io/version-test/stronadotestowania?debug_mode=true"], // Zezwolenie na osadzanie iframe na stronie Bubble
     }
 }));
 
