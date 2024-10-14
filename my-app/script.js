@@ -24,6 +24,33 @@ async function fetchCompanies() {
     }
 }
 
+
+function showPopup() {
+    if (idx >= companiesData.length) return;
+
+    let currentItem = companiesData[idx];
+    let currentName = currentItem.title;
+    let currentDescription = currentItem.description || 'Brak opisu';
+
+    document.getElementById('popupTitle').innerText = currentName;
+    document.getElementById('popupDescription').innerText = currentDescription;
+    document.getElementById('popup').style.display = 'flex';
+}
+
+// Funkcja zamykająca pop-up
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// Dodaj obsługę zdarzeń dla przycisków
+document.getElementById('detailsBtn').addEventListener('click', showPopup);
+document.getElementById('closePopup').addEventListener('click', closePopup);
+window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('popup')) {
+        closePopup();
+    }
+});
+
 async function fetchInvestor(investorId) {
     try {
         const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:xFXNH7S-/user_info/${investorId}`, {
