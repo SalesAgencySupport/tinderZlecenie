@@ -5,16 +5,18 @@ const helmet = require('helmet');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Użyj Helmet, ale wyłącz X-Frame-Options
-app.use(helmet({
-    frameguard: false // Wyłączenie X-Frame-Options
-}));
+// Użyj Helmet, ale dostosuj nagłówki CSP
+app.use(helmet());
 
-// Dodanie polityki CSP, aby umożliwić osadzenie w iframe
+// Konfiguracja polityki CSP
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'"],
-        frameAncestors: ["'self'", "https://your-bubble-domain.com"], // Dodaj domenę Bubble, aby umożliwić osadzenie strony w iframe
+        defaultSrc: ["'self'"], // Zezwól na zasoby tylko z tej samej domeny
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Zezwól na skrypty z tej samej domeny, inline i eval (należy ostrożnie używać)
+        scriptSrcAttr: ["'self'", "'unsafe-inline'"], // Zezwól na atrybuty skryptów inline
+        imgSrc: ["'self'", "data:", "http:", "https:"], // Zezwól na obrazy z różnych źródeł
+        connectSrc: ["'self'", "https://x8ki-letl-twmt.n7.xano.io"], // Zezwól na połączenia z API Xano
+        frameAncestors: ["'self'", "https://your-bubble-domain.com"], // Zezwól na osadzanie w iframe
     }
 }));
 
