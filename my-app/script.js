@@ -24,33 +24,6 @@ async function fetchCompanies() {
     }
 }
 
-
-function showPopup() {
-    if (idx >= companiesData.length) return;
-
-    let currentItem = companiesData[idx];
-    let currentName = currentItem.title;
-    let currentDescription = currentItem.description || 'Brak opisu';
-
-    document.getElementById('popupTitle').innerText = currentName;
-    document.getElementById('popupDescription').innerText = currentDescription;
-    document.getElementById('popup').style.display = 'flex';
-}
-
-// Funkcja zamykająca pop-up
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-}
-
-// Dodaj obsługę zdarzeń dla przycisków
-document.getElementById('detailsBtn').addEventListener('click', showPopup);
-document.getElementById('closePopup').addEventListener('click', closePopup);
-window.addEventListener('click', (event) => {
-    if (event.target === document.getElementById('popup')) {
-        closePopup();
-    }
-});
-
 async function fetchInvestor(investorId) {
     try {
         const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:xFXNH7S-/user_info/${investorId}`, {
@@ -102,6 +75,32 @@ async function showItem() {
     currentBox.style.opacity = '1';
 }
 
+async function showPopup() {
+    if (idx >= companiesData.length) return;
+
+    let currentItem = companiesData[idx];
+    let investorName = 'Brak inwestora'; // Domyślny tekst
+    let investorDescription = 'Brak opisu'; // Domyślny opis
+
+    // Sprawdzenie, czy jest dostępny identyfikator inwestora
+    if (currentItem.investor_id) {
+        const investor = await fetchInvestor(currentItem.investor_id);
+        if (investor) {
+            investorName = investor.full_name;
+            investorDescription = investor.description || 'Brak opisu';
+        }
+    }
+
+    document.getElementById('popupTitle').innerText = investorName;
+    document.getElementById('popupDescription').innerText = investorDescription;
+    document.getElementById('popup').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// Funkcje drag and drop
 function dragStart(e) {
     dragState = true;
     startPoint = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -152,12 +151,11 @@ window.onload = async function () {
     showItem();
 };
 
-function randomFunc() {
-    if (idx >= companiesData.length) return;
-
-    let currentItem = companiesData[idx];
-    let currentName = currentItem.title;
-    let currentAddress = currentItem.location;
-
-    alert(`Zlecenie: ${currentName}\nLokalizacja: ${currentAddress}`);
-}
+// Dodaj obsługę zdarzeń dla przycisków
+document.getElementById('detailsBtn').addEventListener('click', showPopup);
+document.getElementById('closePopup').addEventListener('click', closePopup);
+window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('popup')) {
+        closePopup();
+    }
+});
