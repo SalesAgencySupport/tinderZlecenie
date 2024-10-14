@@ -72,68 +72,56 @@ async function showItem() {
     currentBox.style.transform = 'translate(0px, 0px) rotate(0deg)';
     currentBox.style.opacity = '1';
 }
+
 function dragStart(e) {
-            dragState = true;
-            startPoint = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            currentBox.style.transition = 'none';
-            currentBox.style.cursor = 'grabbing';
-        }
+    dragState = true;
+    startPoint = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    currentBox.style.transition = 'none';
+    currentBox.style.cursor = 'grabbing';
+}
 
-        function drag(e) {
-            if (!dragState) return;
-            movePoint = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-            const offset = movePoint - startPoint;
-            const angle = (offset / window.innerWidth) * maxTilt;
-            currentBox.style.transform = `translateX(${offset}px) rotate(${angle}deg)`;
+function drag(e) {
+    if (!dragState) return;
+    movePoint = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const offset = movePoint - startPoint;
+    const angle = (offset / window.innerWidth) * maxTilt;
+    currentBox.style.transform = `translateX(${offset}px) rotate(${angle}deg)`;
+}
 
-            const maxOffset = window.innerWidth / 2;
-            const colorFactor = Math.min(Math.abs(offset) / maxOffset, 1);
+function dragEnd() {
+    if (!dragState) return;
+    dragState = false;
+    const offset = movePoint - startPoint;
+    currentBox.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+    currentBox.style.cursor = 'grab';
 
-            if (Math.abs(offset) < 10) {
-                currentBox.style.backgroundColor = 'white';
-            } else if (offset > 0) {
-                const redPart = Math.floor(255 * (1 - colorFactor));
-                currentBox.style.backgroundColor = `rgb(${redPart}, 255, ${redPart})`;
-            } else {
-                const greenPart = Math.floor(255 * (1 - colorFactor));
-                currentBox.style.backgroundColor = `rgb(255, ${greenPart}, ${greenPart})`;
-            }
-        }
+    if (offset > swipeLimit) {
+        currentBox.style.transform = 'translateX(500px) rotate(45deg)';
+        currentBox.style.opacity = '0';
+        idx++;
+        setTimeout(showItem, 500);
+    } else if (offset < -swipeLimit) {
+        currentBox.style.transform = 'translateX(-500px) rotate(-45deg)';
+        currentBox.style.opacity = '0';
+        idx++;
+        setTimeout(showItem, 500);
+    } else {
+        currentBox.style.transform = 'translateX(0) rotate(0)';
+    }
+}
 
-        function dragEnd() {
-            if (!dragState) return;
-            dragState = false;
-            const offset = movePoint - startPoint;
-            currentBox.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            currentBox.style.cursor = 'grab';
+currentBox.addEventListener('mousedown', dragStart);
+currentBox.addEventListener('mousemove', drag);
+currentBox.addEventListener('mouseup', dragEnd);
+currentBox.addEventListener('mouseleave', dragEnd);
+currentBox.addEventListener('touchstart', dragStart);
+currentBox.addEventListener('touchmove', drag);
+currentBox.addEventListener('touchend', dragEnd);
 
-            if (offset > swipeLimit) {
-                currentBox.style.transform = 'translateX(500px) rotate(45deg)';
-                currentBox.style.opacity = '0';
-                idx++;
-                setTimeout(showItem, 500);
-            } else if (offset < -swipeLimit) {
-                currentBox.style.transform = 'translateX(-500px) rotate(-45deg)';
-                currentBox.style.opacity = '0';
-                idx++;
-                setTimeout(showItem, 500);
-            } else {
-                currentBox.style.transform = 'translateX(0) rotate(0)';
-            }
-
-            currentBox.style.backgroundColor = 'white';
-        }
-
-        currentBox.addEventListener('mousedown', dragStart);
-        currentBox.addEventListener('mousemove', drag);
-        currentBox.addEventListener('mouseup', dragEnd);
-        currentBox.addEventListener('mouseleave', dragEnd);
-
-        currentBox.addEventListener('touchstart', dragStart);
-        currentBox.addEventListener('touchmove', drag);
-        currentBox.addEventListener('touchend', dragEnd);
-
-        window.onload = showItem;
+window.onload = async function () {
+    companiesData = await fetchCompanies();
+    showItem();
+};
 
 function randomFunc() {
     if (idx >= companiesData.length) return;
