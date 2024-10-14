@@ -66,6 +66,7 @@ async function showItem() {
         if (investor) {
             document.getElementById('investorInfo').innerText = `Inwestor: ${investor.full_name}, Email: ${investor.email}`;
             document.getElementById('boxName').innerText = investor.full_name;
+            document.getElementById('boxAddress').innerText = investor.phone_number;
         }
     }
 
