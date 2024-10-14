@@ -5,30 +5,39 @@ const helmet = require('helmet');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Użyj Helmet, ale dostosuj nagłówki CSP
+// Użycie Helmet w celu ustawienia nagłówków bezpieczeństwa
 app.use(helmet());
 
-// Konfiguracja polityki CSP
+// Konfiguracja Content Security Policy (CSP)
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'"], // Zezwól na zasoby tylko z tej samej domeny
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Zezwól na skrypty z tej samej domeny, inline i eval (należy ostrożnie używać)
-        scriptSrcAttr: ["'self'", "'unsafe-inline'"], // Zezwól na atrybuty skryptów inline
-        imgSrc: ["'self'", "data:", "http:", "https:"], // Zezwól na obrazy z różnych źródeł
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        imgSrc: ["'self'", "data:", "http:", "https:"],
         connectSrc: ["'self'", "https://x8ki-letl-twmt.n7.xano.io"], // Zezwól na połączenia z API Xano
-        frameAncestors: ["'self'", "https://your-bubble-domain.com"], // Zezwól na osadzanie w iframe
+        frameAncestors: ["'self'", "https://bubble.io"], // Zezwolenie na osadzanie iframe
     }
 }));
 
-// Ustawienia katalogu, w którym znajdują się pliki statyczne
+// Obsługa żądań favicon
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end(); // Brak zawartości
+});
+
+// Ustawienia katalogu z plikami statycznymi
 app.use(express.static(path.join(__dirname, 'my-app')));
 
-// Trasa do głównej strony
+// Trasa główna serwująca plik index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'my-app', 'index.html'));
 });
 
+// Obsługa błędów w ścieżce /api i inne
+app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'Nie znaleziono API' });
+});
+
 // Uruchomienie serwera
 app.listen(PORT, () => {
-    console.log(`Serwer działa na porcie ${PORT}`);
+    console.log(`Serwer działa na http://localhost:${PORT}`);
 });
