@@ -100,6 +100,34 @@ function closePopup() {
     document.getElementById('popup').style.display = 'none';
 }
 
+async function assignFreelancerToJob(zlecenieId, freelancerId) {
+    try {
+        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:xFXNH7S-/zlecenia_add_frelancer_id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id_zlecenia: zlecenieId,
+                id_freelancera: freelancerId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Błąd sieciowy podczas przypisywania zlecenia');
+        }
+
+        const result = await response.json();
+        console.log('Zlecenie przypisane:', result);
+    } catch (error) {
+        console.error('Błąd podczas przypisywania zlecenia:', error);
+    }
+}
+
+
+s
+
+
 // Funkcje drag and drop
 function dragStart(e) {
     dragState = true;
@@ -126,6 +154,14 @@ function dragEnd() {
     if (offset > swipeLimit) {
         currentBox.style.transform = 'translateX(500px) rotate(45deg)';
         currentBox.style.opacity = '0';
+
+        // Pobieranie id zlecenia i id freelancera (załóżmy, że masz te dane dostępne)
+        const currentItem = companiesData[idx];
+        const freelancerId = 'ID_Twojego_Freelancera';  // Zastąp tym, jak pobierasz ID freelancera
+
+        // Wywołanie funkcji przypisującej zlecenie do freelancera
+        assignFreelancerToJob(currentItem.id, 32);
+
         idx++;
         setTimeout(showItem, 500);
     } else if (offset < -swipeLimit) {
