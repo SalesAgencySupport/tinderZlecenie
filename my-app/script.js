@@ -72,7 +72,6 @@ async function showItem() {
     currentBox.style.transform = 'translate(0px, 0px) rotate(0deg)';
     currentBox.style.opacity = '1';
 }
-
 function dragStart(e) {
     dragState = true;
     startPoint = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -86,6 +85,19 @@ function drag(e) {
     const offset = movePoint - startPoint;
     const angle = (offset / window.innerWidth) * maxTilt;
     currentBox.style.transform = `translateX(${offset}px) rotate(${angle}deg)`;
+
+    const maxOffset = window.innerWidth / 2;
+    const colorFactor = Math.min(Math.abs(offset) / maxOffset, 1);
+
+    if (Math.abs(offset) < 10) {
+        currentBox.style.backgroundColor = 'white';
+    } else if (offset > 0) {
+        const redPart = Math.floor(255 * (1 - colorFactor));
+        currentBox.style.backgroundColor = `rgb(${redPart}, 255, ${redPart})`;
+    } else {
+        const greenPart = Math.floor(255 * (1 - colorFactor));
+        currentBox.style.backgroundColor = `rgb(255, ${greenPart}, ${greenPart})`;
+    }
 }
 
 function dragEnd() {
@@ -108,20 +120,20 @@ function dragEnd() {
     } else {
         currentBox.style.transform = 'translateX(0) rotate(0)';
     }
+
+    currentBox.style.backgroundColor = 'white';
 }
 
 currentBox.addEventListener('mousedown', dragStart);
 currentBox.addEventListener('mousemove', drag);
 currentBox.addEventListener('mouseup', dragEnd);
 currentBox.addEventListener('mouseleave', dragEnd);
+
 currentBox.addEventListener('touchstart', dragStart);
 currentBox.addEventListener('touchmove', drag);
 currentBox.addEventListener('touchend', dragEnd);
 
-window.onload = async function () {
-    companiesData = await fetchCompanies();
-    showItem();
-};
+window.onload = showItem;
 
 function randomFunc() {
     if (idx >= companiesData.length) return;
