@@ -80,14 +80,14 @@ async function showPopup() {
 
     let currentItem = companiesData[idx];
     let investorName = 'Brak inwestora'; // Domyślny tekst
-    let investorDescription = 'Brak opisu'; // Domyślny opis
+    let investorDescription = currentItem.description; // Domyślny opis
 
     // Sprawdzenie, czy jest dostępny identyfikator inwestora
     if (currentItem.investor_id) {
         const investor = await fetchInvestor(currentItem.investor_id);
         if (investor) {
             investorName = investor.full_name;
-            investorDescription = investor.description || 'Brak opisu';
+           
         }
     }
 
