@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/page', (req, res) => {
+app.get('/', (req, res) => {
     // Odczytanie ID z query string
     const userId = req.query.user_id;
   
