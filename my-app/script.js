@@ -156,7 +156,7 @@ function dragEnd() {
         currentBox.style.transform = 'translateX(500px) rotate(45deg)';
         currentBox.style.opacity = '0';
         const currentItem = companiesData[idx];
-        const freelancerId = 32;  // Zastąp tym, jak pobierasz ID freelancera
+        const freelancerId = userId;  // Zastąp tym, jak pobierasz ID freelancera
 
         // Wywołanie funkcji przypisującej zlecenie do freelancera
         assignFreelancerToJob(currentItem.id, freelancerId);
