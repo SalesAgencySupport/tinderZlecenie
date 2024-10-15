@@ -28,6 +28,19 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'my-app', 'index.html'));
 });
 
+
+app.get('/page', (req, res) => {
+    // Odczytanie ID z query string
+    const userId = req.query.user_id;
+  
+    // Wykorzystanie ID w dalszym kodzie
+    console.log(`Otrzymano user_id: ${userId}`);
+  
+    // Możesz tutaj przekazać dane do front-endu lub przetworzyć je na serwerze
+    res.send(`User ID received: ${userId}`);
+  });
+
+
 app.listen(PORT, () => {
     console.log(`Serwer działa na http://localhost:${PORT}`);
 });
