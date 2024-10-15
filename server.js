@@ -21,6 +21,12 @@ app.use(helmet.contentSecurityPolicy({
     }
 }));
 
+app.use((req, res, next) => {
+    res.removeHeader('X-Frame-Options');
+    next();
+  });
+  
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'my-app')));
 
