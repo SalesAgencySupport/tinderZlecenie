@@ -8,6 +8,10 @@ let emptyMessage = document.getElementById('emptyBoxMessage');
 let detailsButton = document.getElementById('detailsBtn');
 const swipeLimit = 120;
 const maxTilt = 45;
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get('user_id') || 'defaultId';  // Get user_id or default value
+
+console.log('User ID:', userId);
 
 async function fetchCompanies() {
     try {
